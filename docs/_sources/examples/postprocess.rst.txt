@@ -1,0 +1,105 @@
+Post Processing
+----------------
+
+
+
+Exploring the ODB
+===================
+
+The odb file is database filr with the following folder structure. You can query the values from the odb files as attributes of a python class.
+
+.. image:: ../imgs/odb_map.png
+   :width: 600px
+   :align: center 
+
+
+Example Script
+++++++++++++++++++++++++++++
+
+The script below presents a piece of code that extracts the **Element Labels** and **Effective Axial Force** from the `job.odb` file.
+
+
+.. code-block:: python
+   :caption: read odb file
+   :name: this-py
+
+    from odbAccess import openOdb
+    odb = openOdb("job.odb")
+    section = odb.rootAssembly.instances["PART-1-1"].elementSets["CP_B_ELS"]
+    arr = odb.steps["Step-18"].frames[-1].fieldOutputs["ESF1"].getSubset(region=section).values
+    elabel, esf = zip(*[[_.elementLabel, _.data] for _ in arr])
+
+
+The second piece of code save the ``elabel`` and ``esf`` variables into a csv file
+
+.. code-block:: python
+   :caption: export results
+
+    import csv
+    file = open("esf.csv", mode='w')
+    writer = csv.writer(file, delimiter=',', lineterminator='\n')
+    writer.writerow(["ELEMENT_LABEL", "ESF"])
+    writer.writerows(zip(*[elabel, esf]))
+    file.close()
+
+.. role:: python(code)
+   :language: python
+
+The two scripts taken together extracts and saves the chosen field outputs into a csv file.
+
+
+
+Breaking down the script
+++++++++++++++++++++++++++++++++++
+
+- :python:`from odbAccess import openOdb` This imports the function odbAccess form the list of core abaqus functions. This is the only function we would need from Abaqus.
+- :python:`odb = openOdb("job.odb")` assigns the opened odb file to an object odb. Python then uses this object to filter and extract field outputs.
+- :python:`section = odb.rootAssembly.instances["PART-1-1"].elementSets["CP_B_ELS"]` We filter the part and element set as a separate section that we would use for extracting outputs.
+- :python:`arr = odb.steps["Step-18"].frames[-1].fieldOutputs["ESF1"].getSubset(region=section) .values` This code extracts the step, frame and field output based on the section specified above. We assign the list of values to the variable `arr`.
+- :python:`elabel, esf = zip(*[[_.elementLabel, _.data] for _ in arr])` In this last step, we extract element labels and effective axial force and assign them to the variables  `elabel` and `esf`.
+
+
+Importing Functions
+====================
+
+Since these operations are frequently used in post processing, It would be highly efficient to develop functions that can be called upon when extracting the outputs. Writing the post processing scripts in an importable module way keeps the code concise, readable and easy to QA.
+
+Extracting Field Output
+++++++++++++++++++++++++++
+The code snippet below extracts the ESF using ``get_ESF()`` function and prints the result in the terminal.
+
+.. literalinclude:: esf.py
+   :language: python
+
+Simillarly other functions such as ``get_SM()``, ``get_S()``, ``get_lcc_params()`` can be used. Please see :ref:`odbreader <odbr>` module for the list of functions available.
+
+Exporting Results
++++++++++++++++++++
+The code snippet below extracts **Element Labels**, **Effective Axial Force** and **Bending Moment**. Saves them to file ``lcc.csv``.
+
+.. literalinclude:: to_csv.py
+   :language: python
+
+Passing Data between Functions
++++++++++++++++++++++++++++++++
+The code snippet below extracts extracts the frame number associated with largest bending moment and passes on to the ``get_lcc_params()`` function. It then prints out the `frame number`, `element label`, `esf` and `bm`.
+
+.. literalinclude:: lcc.py
+   :language: python
+   :emphasize-lines: 9
+
+
+Adding Cases 
++++++++++++++
+Multiple cases can be added to the same python file by using ``Case.clone()`` method.
+
+.. literalinclude:: add_case.py
+   :language: python
+   :emphasize-lines: 13
+
+
+
+
+
+
+

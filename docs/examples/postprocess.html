@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Post Processing &mdash; Abaqus Developer Guide 0.0.1 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Post Processing" href="../api_ref/api_reference.html" />
+    <link rel="prev" title="Getting Started" href="../overview/getting_started.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Abaqus Developer Guide
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../overview/getting_started.html">Getting Started</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Post Processing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#exploring-the-odb">Exploring the ODB</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#example-script">Example Script</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#breaking-down-the-script">Breaking down the script</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#importing-functions">Importing Functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#extracting-field-output">Extracting Field Output</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#exporting-results">Exporting Results</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#passing-data-between-functions">Passing Data between Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#adding-cases">Adding Cases</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api_ref/api_reference.html">Post Processing</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Abaqus Developer Guide</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Post Processing</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/examples/postprocess.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="post-processing">
+<h1>Post Processing<a class="headerlink" href="#post-processing" title="Permalink to this heading"></a></h1>
+<section id="exploring-the-odb">
+<h2>Exploring the ODB<a class="headerlink" href="#exploring-the-odb" title="Permalink to this heading"></a></h2>
+<p>The odb file is database filr with the following folder structure. You can query the values from the odb files as attributes of a python class.</p>
+<a class="reference internal image-reference" href="../_images/odb_map.png"><img alt="../_images/odb_map.png" class="align-center" src="../_images/odb_map.png" style="width: 600px;" /></a>
+<section id="example-script">
+<h3>Example Script<a class="headerlink" href="#example-script" title="Permalink to this heading"></a></h3>
+<p>The script below presents a piece of code that extracts the <strong>Element Labels</strong> and <strong>Effective Axial Force</strong> from the <cite>job.odb</cite> file.</p>
+<div class="literal-block-wrapper docutils container" id="this-py">
+<div class="code-block-caption"><span class="caption-text">read odb file</span><a class="headerlink" href="#this-py" title="Permalink to this code"></a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span> <span class="kn">from</span> <span class="nn">odbAccess</span> <span class="kn">import</span> <span class="n">openOdb</span>
+ <span class="n">odb</span> <span class="o">=</span> <span class="n">openOdb</span><span class="p">(</span><span class="s2">&quot;job.odb&quot;</span><span class="p">)</span>
+ <span class="n">section</span> <span class="o">=</span> <span class="n">odb</span><span class="o">.</span><span class="n">rootAssembly</span><span class="o">.</span><span class="n">instances</span><span class="p">[</span><span class="s2">&quot;PART-1-1&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">elementSets</span><span class="p">[</span><span class="s2">&quot;CP_B_ELS&quot;</span><span class="p">]</span>
+ <span class="n">arr</span> <span class="o">=</span> <span class="n">odb</span><span class="o">.</span><span class="n">steps</span><span class="p">[</span><span class="s2">&quot;Step-18&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">frames</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">fieldOutputs</span><span class="p">[</span><span class="s2">&quot;ESF1&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">getSubset</span><span class="p">(</span><span class="n">region</span><span class="o">=</span><span class="n">section</span><span class="p">)</span><span class="o">.</span><span class="n">values</span>
+ <span class="n">elabel</span><span class="p">,</span> <span class="n">esf</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="p">[[</span><span class="n">_</span><span class="o">.</span><span class="n">elementLabel</span><span class="p">,</span> <span class="n">_</span><span class="o">.</span><span class="n">data</span><span class="p">]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">arr</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<p>The second piece of code save the <code class="docutils literal notranslate"><span class="pre">elabel</span></code> and <code class="docutils literal notranslate"><span class="pre">esf</span></code> variables into a csv file</p>
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-text">export results</span><a class="headerlink" href="#id1" title="Permalink to this code"></a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span> <span class="kn">import</span> <span class="nn">csv</span>
+ <span class="n">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;esf.csv&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+ <span class="n">writer</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">writer</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">lineterminator</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+ <span class="n">writer</span><span class="o">.</span><span class="n">writerow</span><span class="p">([</span><span class="s2">&quot;ELEMENT_LABEL&quot;</span><span class="p">,</span> <span class="s2">&quot;ESF&quot;</span><span class="p">])</span>
+ <span class="n">writer</span><span class="o">.</span><span class="n">writerows</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">elabel</span><span class="p">,</span> <span class="n">esf</span><span class="p">]))</span>
+ <span class="n">file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<p>The two scripts taken together extracts and saves the chosen field outputs into a csv file.</p>
+</section>
+<section id="breaking-down-the-script">
+<h3>Breaking down the script<a class="headerlink" href="#breaking-down-the-script" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p><code class="code highlight python docutils literal highlight-python"><span class="kn">from</span> <span class="nn">odbAccess</span> <span class="kn">import</span> <span class="n">openOdb</span></code> This imports the function odbAccess form the list of core abaqus functions. This is the only function we would need from Abaqus.</p></li>
+<li><p><code class="code highlight python docutils literal highlight-python"><span class="n">odb</span> <span class="o">=</span> <span class="n">openOdb</span><span class="p">(</span><span class="s2">&quot;job.odb&quot;</span><span class="p">)</span></code> assigns the opened odb file to an object odb. Python then uses this object to filter and extract field outputs.</p></li>
+<li><p><code class="code highlight python docutils literal highlight-python"><span class="n">section</span> <span class="o">=</span> <span class="n">odb</span><span class="o">.</span><span class="n">rootAssembly</span><span class="o">.</span><span class="n">instances</span><span class="p">[</span><span class="s2">&quot;PART-1-1&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">elementSets</span><span class="p">[</span><span class="s2">&quot;CP_B_ELS&quot;</span><span class="p">]</span></code> We filter the part and element set as a separate section that we would use for extracting outputs.</p></li>
+<li><p><code class="code highlight python docutils literal highlight-python"><span class="n">arr</span> <span class="o">=</span> <span class="n">odb</span><span class="o">.</span><span class="n">steps</span><span class="p">[</span><span class="s2">&quot;Step-18&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">frames</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">fieldOutputs</span><span class="p">[</span><span class="s2">&quot;ESF1&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">getSubset</span><span class="p">(</span><span class="n">region</span><span class="o">=</span><span class="n">section</span><span class="p">)</span> <span class="o">.</span><span class="n">values</span></code> This code extracts the step, frame and field output based on the section specified above. We assign the list of values to the variable <cite>arr</cite>.</p></li>
+<li><p><code class="code highlight python docutils literal highlight-python"><span class="n">elabel</span><span class="p">,</span> <span class="n">esf</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="p">[[</span><span class="n">_</span><span class="o">.</span><span class="n">elementLabel</span><span class="p">,</span> <span class="n">_</span><span class="o">.</span><span class="n">data</span><span class="p">]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">arr</span><span class="p">])</span></code> In this last step, we extract element labels and effective axial force and assign them to the variables  <cite>elabel</cite> and <cite>esf</cite>.</p></li>
+</ul>
+</section>
+</section>
+<section id="importing-functions">
+<h2>Importing Functions<a class="headerlink" href="#importing-functions" title="Permalink to this heading"></a></h2>
+<p>Since these operations are frequently used in post processing, It would be highly efficient to develop functions that can be called upon when extracting the outputs. Writing the post processing scripts in an importable module way keeps the code concise, readable and easy to QA.</p>
+<section id="extracting-field-output">
+<h3>Extracting Field Output<a class="headerlink" href="#extracting-field-output" title="Permalink to this heading"></a></h3>
+<p>The code snippet below extracts the ESF using <code class="docutils literal notranslate"><span class="pre">get_ESF()</span></code> function and prints the result in the terminal.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fastfea.abaqus.odbreader</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="n">c1</span> <span class="o">=</span> <span class="n">Case</span><span class="p">()</span>
+<span class="n">c1</span><span class="o">.</span><span class="n">odb_file</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;c:\path\job.odb&quot;</span>
+<span class="n">c1</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="s2">&quot;LOAD&quot;</span>
+<span class="n">c1</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+<span class="n">c1</span><span class="o">.</span><span class="n">part</span> <span class="o">=</span> <span class="s2">&quot;PART-1-1&quot;</span>
+<span class="n">c1</span><span class="o">.</span><span class="n">elset</span> <span class="o">=</span> <span class="s2">&quot;PIPELINE&quot;</span>
+
+<span class="n">c1</span><span class="o">.</span><span class="n">ESF</span> <span class="o">=</span> <span class="n">get_ESF</span><span class="p">(</span><span class="o">**</span><span class="n">c1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">c1</span><span class="o">.</span><span class="n">ESF</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Simillarly other functions such as <code class="docutils literal notranslate"><span class="pre">get_SM()</span></code>, <code class="docutils literal notranslate"><span class="pre">get_S()</span></code>, <code class="docutils literal notranslate"><span class="pre">get_lcc_params()</span></code> can be used. Please see <a class="reference internal" href="../api_ref/api_reference.html#odbr"><span class="std std-ref">odbreader</span></a> module for the list of functions available.</p>
+</section>
+<section id="exporting-results">
+<h3>Exporting Results<a class="headerlink" href="#exporting-results" title="Permalink to this heading"></a></h3>
+<p>The code snippet below extracts <strong>Element Labels</strong>, <strong>Effective Axial Force</strong> and <strong>Bending Moment</strong>. Saves them to file <code class="docutils literal notranslate"><span class="pre">lcc.csv</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fastfea.abaqus.odbreader</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="n">c1</span> <span class="o">=</span> <span class="n">Case</span><span class="p">()</span>
+<span class="n">c1</span><span class="o">.</span><span class="n">odb_file</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;c:\path\job.odb&quot;</span>
+<span class="n">c1</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="s2">&quot;LOAD&quot;</span>
+<span class="n">c1</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+<span class="n">c1</span><span class="o">.</span><span class="n">part</span> <span class="o">=</span> <span class="s2">&quot;PART-1-1&quot;</span>
+<span class="n">c1</span><span class="o">.</span><span class="n">elset</span> <span class="o">=</span> <span class="s2">&quot;PIPELINE&quot;</span>
+
+<span class="n">c1</span><span class="o">.</span><span class="n">ESF</span> <span class="o">=</span> <span class="n">get_ESF</span><span class="p">(</span><span class="o">**</span><span class="n">c1</span><span class="p">)</span>
+<span class="n">c1</span><span class="o">.</span><span class="n">SM</span> <span class="o">=</span> <span class="n">get_SM</span><span class="p">(</span><span class="o">**</span><span class="n">c1</span><span class="p">)</span>
+<span class="n">c1</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="n">get_el_labels</span><span class="p">(</span><span class="o">**</span><span class="n">c1</span><span class="p">)</span>
+
+<span class="n">write_csv</span><span class="p">(</span>
+    <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;lcc.csv&quot;</span><span class="p">,</span>
+    <span class="n">header</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;LABEL&quot;</span><span class="p">,</span> <span class="s2">&quot;ESF1&quot;</span><span class="p">,</span> <span class="s2">&quot;BM&quot;</span><span class="p">],</span>
+    <span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="n">c1</span><span class="o">.</span><span class="n">label</span><span class="p">,</span> <span class="n">c1</span><span class="o">.</span><span class="n">ESF</span><span class="p">,</span> <span class="n">c1</span><span class="o">.</span><span class="n">SM</span><span class="o">.</span><span class="n">BM</span><span class="p">],</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="passing-data-between-functions">
+<h3>Passing Data between Functions<a class="headerlink" href="#passing-data-between-functions" title="Permalink to this heading"></a></h3>
+<p>The code snippet below extracts extracts the frame number associated with largest bending moment and passes on to the <code class="docutils literal notranslate"><span class="pre">get_lcc_params()</span></code> function. It then prints out the <cite>frame number</cite>, <cite>element label</cite>, <cite>esf</cite> and <cite>bm</cite>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fastfea.abaqus.odbreader</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="n">c1</span> <span class="o">=</span> <span class="n">Case</span><span class="p">()</span>
+<span class="n">c1</span><span class="o">.</span><span class="n">odb_file</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;c:\path\job.odb&quot;</span>
+<span class="n">c1</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="s2">&quot;LOAD&quot;</span>
+<span class="n">c1</span><span class="o">.</span><span class="n">part</span> <span class="o">=</span> <span class="s2">&quot;PART-1-1&quot;</span>
+<span class="n">c1</span><span class="o">.</span><span class="n">elset</span> <span class="o">=</span> <span class="s2">&quot;PIPELINE&quot;</span>
+
+<span class="hll"><span class="n">c1</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">get_maxbm_frame</span><span class="p">(</span><span class="o">**</span><span class="n">c1</span><span class="p">)</span>
+</span><span class="n">c1</span><span class="o">.</span><span class="n">lcc</span> <span class="o">=</span> <span class="n">get_lcc_params</span><span class="p">(</span><span class="o">**</span><span class="n">c1</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Frame: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c1</span><span class="o">.</span><span class="n">frame</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Label: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c1</span><span class="o">.</span><span class="n">lcc</span><span class="o">.</span><span class="n">label</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;BM: </span><span class="si">{}</span><span class="s2">kN.m&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">c1</span><span class="o">.</span><span class="n">lcc</span><span class="o">.</span><span class="n">bm</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">2</span><span class="p">)))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ESF: </span><span class="si">{}</span><span class="s2">kN&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">c1</span><span class="o">.</span><span class="n">lcc</span><span class="o">.</span><span class="n">esf</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">2</span><span class="p">)))</span>
+</pre></div>
+</div>
+</section>
+<section id="adding-cases">
+<h3>Adding Cases<a class="headerlink" href="#adding-cases" title="Permalink to this heading"></a></h3>
+<p>Multiple cases can be added to the same python file by using <code class="docutils literal notranslate"><span class="pre">Case.clone()</span></code> method.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fastfea.abaqus.odbreader</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="n">c1</span> <span class="o">=</span> <span class="n">Case</span><span class="p">()</span>
+<span class="n">c1</span><span class="o">.</span><span class="n">odb_file</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;c:\path\job.odb&quot;</span>
+<span class="n">c1</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="s2">&quot;LOAD&quot;</span>
+<span class="n">c1</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">c1</span><span class="o">.</span><span class="n">part</span> <span class="o">=</span> <span class="s2">&quot;PART-1-1&quot;</span>
+<span class="n">c1</span><span class="o">.</span><span class="n">elset</span> <span class="o">=</span> <span class="s2">&quot;PIPELINE&quot;</span>
+
+<span class="n">c1</span><span class="o">.</span><span class="n">ESF</span> <span class="o">=</span> <span class="n">get_ESF</span><span class="p">(</span><span class="o">**</span><span class="n">c1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">c1</span><span class="o">.</span><span class="n">ESF</span><span class="p">)</span>
+
+<span class="hll"><span class="n">c2</span> <span class="o">=</span> <span class="n">c1</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
+</span><span class="n">c2</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">c2</span><span class="o">.</span><span class="n">ESF</span> <span class="o">=</span> <span class="n">get_ESF</span><span class="p">(</span><span class="o">**</span><span class="n">c2</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">c2</span><span class="o">.</span><span class="n">ESF</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../overview/getting_started.html" class="btn btn-neutral float-left" title="Getting Started" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../api_ref/api_reference.html" class="btn btn-neutral float-right" title="Post Processing" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Abhishek Mamgain.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

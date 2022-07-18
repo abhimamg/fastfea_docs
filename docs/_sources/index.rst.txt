@@ -1,0 +1,54 @@
+.. Abaqus Scripting Developer Guide documentation master file, created by
+   sphinx-quickstart on Tue May 31 10:20:36 2022.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+FastFEA User Guide
+========================
+
+This is the userguide for using FastFEA package to complement the abaqus FEA. This guide is divided into the following categories.
+
+* Pre-processing
+* Post-processing
+* Analysis Tracking
+* Engineering Optimisation
+
+The package has been developed using open source libraries available in python. The objective of the package is to automate the the FEA workflow for pipeline engineering.
+
+.. image:: imgs/fea_workflow.png
+    :width: 750px
+    :align: center
+
+In this release only post-processing module has been developed. The future releases will incrementally roll out the other modules.
+
+   :Date: 31-05-2022
+   :Version: 0.0.1
+   :Author: Abhishek Mamgain 
+   :Contact: abhishek.mamgain@technipfmc.com
+
+.. toctree::
+  :maxdepth: 2
+  :caption: Overview
+
+  overview/getting_started.rst
+
+
+.. toctree::
+  :maxdepth: 2
+  :caption: Examples
+
+  examples/postprocess.rst
+
+.. toctree::
+  :maxdepth: 2
+  :caption: API Reference
+
+  api_ref/api_reference.rst
+
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
