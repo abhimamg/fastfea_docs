@@ -1,0 +1,32 @@
+Installation
+=====================
+This section will guide you through the steps of installation of the software package.
+
+Install Python interpreter
+---------------------------
+Ensure you have Python > 3.9. To check what python version is installed on your system, type the following command in command prompt. 
+
+.. code-block:: shell
+   
+   py -3 --version
+
+.. note::
+  FastFEA is compatible with Python version 3.9 and above.
+
+If you do not have python >3.9 installed on your system then please install from the software centre.
+
+
+
+Installing FastFEA Package
+---------------------------
+
+* Download ``fastfea-0.0.4-py3-none-any.whl`` and ``install_fastfea.bat`` in any folder on your computer.
+* Double click ``install_fastfea.bat`` file. If windows security warning is shown, right click > properties > tick unblock.
+* Installation complete if no errors were returned. Delete both files.
+
+Usage
+------
+
+* Download and populate the ``yml_file`` and ``run.bat`` file from the examples folder.
+* Double click ``run.bat``
+
