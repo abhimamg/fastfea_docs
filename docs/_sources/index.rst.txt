@@ -8,6 +8,11 @@ FastFEA User Guide
 
 This is the userguide for using FastFEA package to complement the abaqus FEA. The objective of this software package is to automate the the FEA workflow for pipeline engineering.
 
+The general architecture of the software is highly automated and flexible which allows user to modify yml and sql files to suit the use cases.
+
+.. image:: imgs/fastfea_map.png
+   :width: 350px
+   :align: center
 
 Features
 -------------

@@ -29,4 +29,9 @@ Usage
 
 * Download and populate the ``yml_file`` and ``run.bat`` file from the examples folder.
 * Double click ``run.bat``
+* To convert the database file to Excel. Add the following command to the ``run.bat`` file.
+
+.. code-block:: shell
+   
+   call fastfea --convert fastfea.db
 

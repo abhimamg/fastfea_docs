@@ -2,14 +2,15 @@ Examples
 =====================
 In this section you will see different configurations of yml file that can be used by the user. Copy the the suitable section and save it as ``input.yml`` file.
 
-..  literalinclude:: single_case.yml
+
+..  literalinclude:: scripts/single_case.yml
 		:language: yaml
 		:linenos:
-		:caption: Single Case
+		:caption: Input File
 
 You can add cases by repeating information under the CASES keyword. Here you want to extract field outputs for two steps.
 
-..  literalinclude:: mult_case.yml
+..  literalinclude:: scripts/mult_case.yml
 		:language: yaml
 		:linenos:
 		:caption: Multiple Cases
@@ -17,14 +18,14 @@ You can add cases by repeating information under the CASES keyword. Here you wan
 
 If you notice, a few information has been included twice in both the cases. A cleaner way to write the same file would be:
 
-..  literalinclude:: mult_case_clean.yml
+..  literalinclude:: scripts/mult_case_clean.yml
 		:language: yaml
 		:linenos:
 		:caption: Multiple Cases (Cleaner Way)
 
 Extracting multiple set types
 
-..  literalinclude:: elem_node.yml
+..  literalinclude:: scripts/elem_node.yml
 		:language: yaml
 		:linenos:
 		:caption: Element and Nodal Outputs
